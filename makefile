@@ -1,4 +1,4 @@
 compile: control.c
-	gcc control.c -o control
-	gcc client.c -o client
+	gcc -g control.c -o control
+	gcc -g client.c -o client
 

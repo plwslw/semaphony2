@@ -17,14 +17,15 @@ union semun {
 };
 
 int main(int argc, char* argv[]){
-  printf(":('\n");
+  //printf(":('\xsn");
   int semid;
-  int shmid, shc;
+  int shmid;
+  int *shc;
   int sem_key=ftok("control.c", 22);
   int shm_key=ftok("client.c", 22);
   int fd;
 
-  printf("why so seg faulty?\n");
+  //printf("why so seg faulty?\n");
   
   semid=semget(sem_key, 1, 0);
   struct sembuf sb;
@@ -35,21 +36,21 @@ int main(int argc, char* argv[]){
 
   //in semaphore
   shmid = shmget(shm_key, 100, 0);
-  shmat(shmid, &shc, 0);
+  shc = shmat(shmid, NULL, 0);
   
   fd = open("story.txt", O_RDWR);
-  lseek(fd, -shc, SEEK_END);
-  char line[shc];
-  read(fd, line, shc);
-  printf("previous line: %s", line);
+  lseek(fd, -(*shc), SEEK_END);
+  char line[*shc];
+  read(fd, line, *shc);
+  printf("previous line: %s\n", line);
 
   printf("enter the next line of the story:");
   char newline[1000];
   fgets(newline, 1000, stdin);
-  shc=sizeof(newline);
-  write(fd, newline, sizeof(newline));
+  write(fd, newline, strlen(newline));
+  *shc = strlen(newline);
   close(fd);
-  shmdt(&shc);
+  shmdt(shc);
 
   //up semaphore
   sb.sem_op = 1;

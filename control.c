@@ -41,7 +41,7 @@ int main(int argc, char* argv[]){
     shmid = shmget(shm_key, 100, IPC_CREAT | IPC_EXCL | 0644);
     shmat(shmid, &shc, 0);
     shc = 0;
-    shmdt(&shc);
+    //shmdt(&shc);
       
     printf("shared memory key: %#x\n", shm_key);
 
@@ -74,8 +74,8 @@ int main(int argc, char* argv[]){
     fd=open("story.txt", O_TRUNC);
     close(fd);
     
-    shmid = shmget(shm_key, 100, 0);
-    shmat(shmid, &shc, 0);
+    //shmid = shmget(shm_key, 100, 0);
+    //shmat(shmid, &shc, 0);
     shmctl(shc, IPC_RMID, 0);
 
     semid=semget(sem_key, 0, 0);
